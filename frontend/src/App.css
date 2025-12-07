@@ -1,0 +1,151 @@
+/* App-specific styles */
+
+/* Wizard step indicator */
+.wizard-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-weight: 600;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.wizard-step.completed {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.wizard-step.active {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.wizard-step.pending {
+  background-color: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+
+/* Strategy card */
+.strategy-card {
+  cursor: pointer;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+  border: 2px solid transparent;
+}
+
+.strategy-card:active {
+  transform: scale(0.98);
+}
+
+.strategy-card.selected {
+  border-color: hsl(var(--accent));
+  box-shadow: 0 0 0 4px hsl(var(--accent) / 0.2);
+}
+
+/* Size selector */
+.size-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 2px solid hsl(var(--border));
+  cursor: pointer;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+
+.size-option:active {
+  transform: scale(0.98);
+}
+
+.size-option.selected {
+  border-color: hsl(var(--accent));
+  background-color: hsl(var(--accent) / 0.1);
+}
+
+/* Image preview grid */
+.image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .image-preview-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Generated content gallery */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Language toggle button */
+.lang-toggle {
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background));
+  transition: background-color 200ms ease;
+}
+
+.lang-toggle:active {
+  background: hsl(var(--muted));
+}
+
+/* Platform badge */
+.platform-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: hsl(var(--muted));
+  color: hsl(var(--muted-foreground));
+}
+
+/* Loading skeleton */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--muted-foreground) / 0.1) 50%,
+    hsl(var(--muted)) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Hero section gradient */
+.hero-gradient {
+  background: linear-gradient(
+    135deg,
+    hsl(var(--background)) 0%,
+    hsl(var(--muted)) 50%,
+    hsl(var(--background)) 100%
+  );
+}
+
+/* Feature card hover state for non-touch */
+@media (hover: hover) {
+  .feature-card {
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px hsl(var(--foreground) / 0.1);
+  }
+}
