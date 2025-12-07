@@ -34,9 +34,17 @@ export function AuthProvider({ children }) {
     checkAuth();
   }, [checkAuth]);
 
-  const login = () => {
-    const redirectUrl = window.location.origin + '/dashboard';
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+  const login = async () => {
+    // DEMO MODE: Direct login without external redirect
+    setLoading(true);
+    try {
+      await processSessionId('demo_session');
+      window.location.href = '/dashboard';
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = async () => {
@@ -59,7 +67,7 @@ export function AuthProvider({ children }) {
       }, {
         withCredentials: true
       });
-      
+
       if (response.data.success) {
         setUser(response.data.user);
         sessionStorage.setItem('just_authenticated', 'true');
