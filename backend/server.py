@@ -422,42 +422,26 @@ def generate_caption(project: dict, strategy: dict) -> Dict[str, Any]:
 
 @api_router.post("/auth/session")
 async def create_session(request: Request, response: Response):
-    """Process session_id from Google OAuth and create session"""
+    """Process session_id from Google OAuth and create session (DEMO MODE - NO AUTH REQUIRED)"""
     try:
-        data = await request.json()
-        session_id = data.get("session_id")
-        if not session_id:
-            raise HTTPException(status_code=400, detail="session_id required")
+        # DEMO MODE: Create anonymous user session without external auth
+        user_id = "demo_user"
+        user_email = "demo@neuroad.app"
+        user_name = "Demo User"
         
-        async with httpx.AsyncClient() as client:
-            res = await client.get(
-                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-                headers={"X-Session-ID": session_id}
-            )
-            if res.status_code != 200:
-                raise HTTPException(status_code=401, detail="Invalid session")
-            user_data = res.json()
+        existing_user = await db.users.find_one({"user_id": user_id}, {"_id": 0})
         
-        user_id = f"user_{uuid.uuid4().hex[:12]}"
-        existing_user = await db.users.find_one({"email": user_data["email"]}, {"_id": 0})
-        
-        if existing_user:
-            user_id = existing_user["user_id"]
-            await db.users.update_one(
-                {"user_id": user_id},
-                {"$set": {"name": user_data["name"], "picture": user_data.get("picture")}}
-            )
-        else:
+        if not existing_user:
             await db.users.insert_one({
                 "user_id": user_id,
-                "email": user_data["email"],
-                "name": user_data["name"],
-                "picture": user_data.get("picture"),
+                "email": user_email,
+                "name": user_name,
+                "picture": None,
                 "created_at": datetime.now(timezone.utc).isoformat()
             })
         
-        session_token = user_data.get("session_token") or f"session_{uuid.uuid4().hex}"
-        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+        session_token = f"demo_session_{uuid.uuid4().hex}"
+        expires_at = datetime.now(timezone.utc) + timedelta(days=365)
         
         await db.user_sessions.delete_many({"user_id": user_id})
         await db.user_sessions.insert_one({
@@ -473,7 +457,7 @@ async def create_session(request: Request, response: Response):
             httponly=True,
             secure=True,
             samesite="none",
-            max_age=7*24*60*60,
+            max_age=365*24*60*60,
             path="/"
         )
         
